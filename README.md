@@ -1,6 +1,7 @@
 **API REST de gestion d'utilisateurs et de publications (FastAPI)**  
 **Introduction**  
-![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANklEQVR4nO3OQQmAABRAsSeYxZw/lieLGMACBrCCNxG2BFtmZquOAAD4i3Ot7mr/egIAwGvXA6fGBdgoVMwYAAAAAElFTkSuQmCC)  
+
+---
 **Sommaire**  
 1. [Structure du projet](#anchor-1 "#anchor-1")  
 2. [Architecture FastAPI](#anchor-2 "#anchor-2")  
@@ -8,7 +9,8 @@
 4. [Sécurité et authentification](#anchor-4 "#anchor-4")  
 5. [Conteneurisation et reverse proxy](#anchor-5 "#anchor-5")  
 6. [Outils et standards](#anchor-6 "#anchor-6")  
-![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANUlEQVR4nO3OMQ2AABAAsSNBCUpfD6ZYGZDAgAU2QtIq6DIzW7UHAMBfHGt1V+fXEwAAXrseHCoGAe/SKtAAAAAASUVORK5CYII=)  
+
+---
 **Structure du projet**  
 .  
  ├── main.py              # Les endpoints de l'API  
@@ -26,21 +28,28 @@
  ├── alembic.ini          # Configuration des migrations  
  └── alembic/             # Scripts de migration  
    
-![](data:image/png;base64,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f/+bjz76iN69exMVFcUXX3xR7G3mg/Dz8+P999+na9eulXrch5mqqixatIjatWubbPvf//7HoEGD6NKlCzY2Nvj4+BR74LhXr776KomJiezcuZPjx4+zb98+pkyZ8qCXIEpwL/dyedsrUn+UtL1169YYjUb+/PNPk+09evQgLCwMvV5PYGAgp0+fJioqCoPBQHp6+gNfw/1eR3n7Dx8+TEhISImxlBff/Zyvose48//Pnz8fnU5HcHAwPXr0IDExkSVLlmjlatWqxZIlSwgJCaFXr158++23zJ8/X2sDKIrCxIkTadasGSNGjOCll16iZs2azJgxQzuPTqdjyZIl3Lp1i379+vHee+8xcODAYg+2D+q9995j5MiR2hwr1V1MTAwtW7bEz88PRVEwMzMzeSht2rQpzs7OKIpCnTp1sLe311bNuXDhAkFBQfj6+mJvb09AQABBQUHodDpOnz5d7FwHDhygRYsWD813809RFIUPPviAmjVrMnbsWLp27crbb7/N2bNnycrK0sqMHTuWmTNncuDAAV555RWCg4NZsWIFvXr1YtmyZffVPnB2dqZTp05ER0fz4osv3lPM5dXF99tuK+0YZZ2zpGNUFldXV6ZPn06fPn2wt7evtOOKR4skEqqRXbt28eabb+Ln58c333zDnj17WL16Nb1796ZGjRqoqsqqVato3bo1r732GnD7IaKol0JqaiqjRo3Czs6O7777jj179vDJJ5+YvOG4s3xJ21RV5dNPP6Vdu3bs2LGD//73v6UmLkTlq127NsuXL2fXrl0cOnSI7du3M3Xq1GKVeJs2bfjuu+8IDw9n69atvP766yY9UZ566im+//57wsLCOHToELNnz9b2TZ8+nfDwcMLDwxkwYECxGBo3bkxBQQFr1qwhLy+P1NRU1q9fr/VkUBSFV199ldWrV3PixAkyMjL473//i06no0uXLpX2XRQWFuLk5MRzzz3HxIkTH8uEQkk9kLKysliwYIHJvsjISObOncsbb7zBvn37+Pzzz7G1tTVZ9qyke780Hh4evPTSSybzLixdupTmzZvTunXrB7gicaeiN2j79+8nPDycpUuXUq9ePZP9devW1e7XX375pcztFak/pk6dyg8//FAsju7duxfrjXD3dnt7e5555hntvEuXLgWgXbt2bN26lcjISHbu3Mmbb75pcpwXXniBkJAQrb7q27dvudf3+eefExoaSnh4ON9++63J36FnnnmGH374gdDQUA4ePMimTZsYOnSoSSN6+PDhzJ8/v0I/hyeeeILNmzcTHh7OgQMHmDdvHg4ODvd0vhEjRrBp0ybCw8OJiIjg22+/pUOHDibf5YYNG7ShFpaWlrRo0YKVK1eSlpaGXq/nu+++o27dujg7OwMwaNAgjh8/TkhICJmZmYSGhhIWFsZLL72k/Tz69evHggULiIuLIzk5mU8++YSuXbtqLxDatWuHm5sbn376KWlpaZw9e5Zvv/2WV155pULfTUUpioK/vz+vvfYaI0eOpE6dOtr26ig0NJStW7eyYMECIiIi2Llzp7YMJEDfvn3ZvHkzv/76K0uXLmX37t3a0IRDhw6xb98+VqxYwc8//8yoUaPo27dvqePpU1NT+eOPP+jXrx9Qsbr4Xurrh1mTJk1Yv349sbGx5OXlce3aNTZs2EB+fj4ALVq0YOjQobz55pts2rSJuLg4rl+/TmRkJKNGjcLR0ZE33njjns/78ssv88svv/DVV18xZMiQcocGFk2kuXnzZg4ePMi2bdt4/vnntf3NmjUjJCSEgwcPsnXrVkaMGGHyeRsbGyZPnsyePXsICwtj8eLFeHp6avs7dOjAqlWr2L9/PwcPHmTdunX07t2bKVOmsHXrViIiIli9ejVNmjQB4LnnnuOnn34yOYelpSURERHavfegVFWlRo0atGvXjnHjxtG3b19q1KhRKccWjw6ZI6GaOX36tMmb37udO3eOwYMHa//99ttvm+y/evVqqZ9XVbVYeVVVmTlzpsm2M2fO8PLLL99r6OIBKYqCi4sLvr6+DBw4kMzMTGrVqsXbb7/N0qVLGTlyJAaDgcaNG/PZZ5/x6aefcuDAAerUqcOMGTNwdnZm0aJFKIpCQEAA2dnZ9OnTh/z8fJOurnPnzmXHjh2lxnHt2jWsrKywtrYmLy8PRVFwdnbm+PHjAFhbW9OwYUM+/fRT7TOqqnL69GmaN29e5rHv9fuA22/UihIKQUFBHD16lKioqEo5R3V29epVnnzyyRL3RUZGFtu3e/dudu/eDfz/KzkU9Sa6+95XVdXkIado251Dq+5sJAFkZmZq66aLyrN27VrCw8OxtLRk7Nix2hKcRb//165dM3l7XNb28uoPo9HIxYsXMRgMJjFYWlrSuXNnk1VBFEWhadOm2NracvToUe28YWFhTJ061eTzZ86c4ZVXXiEtLQ0vLy8+//xzLl26xO7du6lVqxZTp05lzJgxnDlzBkdHR6ysrEq9Drj9u7hgwQKSk5MxMzNjyJAhzJ8/n4EDB6IoCg0aNCAtLY2xY8ei1+tp3LgxM2bMwMPDQ1vq+M7vqjy3bt3i7bffJj4+HkdHR2bMmMH48eO1SfNKOt8HH3xgcr5WrVqxe/du1qxZg6IodOrUidmzZ/Pxxx9rD5gnTpwgOjoauD2MMDExEUdHRy1WJycnYmNjuXXrFoqi0Lx5c8LDw01iPXXqFC+99JL28zEajZw9e1bbf+3aNVJTU2nWrBnJyck0b96cv/76S3swKzpGnTp1cHV15ebNmxX6jspy5/dco0YN/P39qVOnDvHx8VU6r8qWLVvYsmVLqfuXLVvGsmXLStw3f/78UhNRRS9c7vwbWBZVVU2Go93d5iqpfHllHhXnz5+nX79+nDhxgtzcXJPkiaIovPDCC0RERHDhwoVin9Xr9axZs0ar4yrKxsaGF154gWHDhnHjxg2Sk5N57rnnTOawuJOiKAwZMoSXXnqJuXPncvr0aezt7SkoKNB+9+Pi4pg5cyY3btwgICCARYsWERcXx969e1EUhXnz5pGdnc2gQYPQ6XSMGjWKhQsXMmzYMBRFwdfXl4yMDPr160deXh4dO3bkk08+YfXq1YwYMYLs7GxGjx7Nxx9/zIABA/j999+ZPXs2tWvXJj4+HkVRaNy4MWlpacTFxd3jT6Fkd7fB2rdvT9OmTTl9+jRHjx6tlHOIh58kEoQoh6WlJc8//zy5ubmllsnNzdUe1rOzs7Gzs9P2GY3GYtnunJwckzkHiri5uWnnKxIZGcnEiROZNm0aFy5coF+/fvz1118mD36//vorI0aM4MaNG1y/fp3AwECcnJzo2bOndpz8/HxcXV156qmnTLLKBoPBpEsnwL59+1i5ciW//fYbBoOBtm3bsmfPHgYPHqxN7PfUU0/RuHFj7RjOzs74+Phoia6CggIsLCxMjpuRkWHypu/O/87MzDR5c3rndwi3/5g5OjrStWtX2rZtS1paWrHv73Hl6uqKk5MT8fHxWrIpODjYpCeKqBhvb2+TZO39yM/Px9LSUvvv0n7vzczMqF+/Pjqdjho1ahAXF8eAAQMYM2YM165dIzAwEHt7ey2eonqjaBLMwYMHmxzb09NTSwoU3dN//PEHo0ePZtq0aRw7dgxzc3OuXbtmco116tQhNzeXNm3a0KZNG217x44duXz5MgMHDgRuL6VXs2ZN+vfvb3J9d8rNzSUpKYmBAwfi6OiIm5sbZmZmNGnSRKsvihRdR9++fYuN64fbvW9q1KiBwWCgXr16WoM6MDAQBwcHkwmKw8LCePXVV0lISKCwsFCL9c7rvLuOKXJnna0oCjdv3tS6PUziLlQAACAASURBVOfn5xMYGIiLi4vJ+bZv386bb75Jamoq2dnZ1KxZk+zsbDp16qT9PI4ePcrUqVNxc3MjIyODmJgYbGxstJj27NnDlClTOHnyJPHx8XTu3JkDBw7Qu3dv7Ozs8Pb2pn79+lp5o9FIw4YN8fT0ZNCgQTRp0oS8vDyTa8zPz8dgMNC1a1ecnJwICgpCr9eblNHr9SiKwssvv0xKSorJ93L336+KuvtNpa2tLb6+vtSuXfuB5tEQ/6yiYR6lLVlZElVVTZJJJc0hASXffydOnOC5557jl19+ISoqihMnTpj8bW/dujV//fVXqXWym5sbLi4uvPrqq+Tl5eHt7Y2rq6tJ+bvjadasGYmJiXTu3Bm4ncwYP3681hMIbvfKa926Nebm5uTm5jJ69Gh2796Nl5dXsXlMAgMDsbKyMknOX7x4kWHDhuHs7Iy7uztt2rRh2bJlWjI+Li6O4OBgxo4dy82bNwkICMDFxcVkufabN2/i5ORE69atcXR0JDU1FW9vb4YNG6YlIosStHB79YgbN24wePDgUu/jO9uqUPb9XlIPUEdHR9q3b0/Lli2LJaTF40kSCUKUw2AwcOnSJW7dulVqmTuTBXcnDu7+I1tSmSL169fHYDBofxjgdhf/v/76C3Nzc86cOcOIESPYtm0b0dHRJgmAAQMGkJOTw6VLl2jSpAk2NjbFjpOTk8O1a9eKbb9zWISiKDRr1ozr169z69YtWrdujaurK7m5uZw7dw4nJydUVeX8+fOkpqZqx2jVqhU6nU479t3HLfou74z5zv++e1/NmjVp2LChyedVVSU1NZWEhASTB7PHna+vL5MnT6ZmzZoUFBQQFxfHl19+yZEjR6o6tIdOWlqayf1xP+7+3S/t976wsJDo6GhiY2O1/ZmZmSQnJxMdHY2DgwN6vb7YPaXT6bTtdybscnNzMRgMnDt3zqTOKao/Ll26VCxpCNCpUyfCwsJMrtvMzIwxY8bwf//3f8TExABQr149bGxsOH/+vMn1NW7cmJ49e1KzZk3Mzc0xNzfn9OnT2vGeeOIJRo8eTUREBKGhoVq9UXQdUVFRJvWhpaUlwcHBNGrUCCcnJ/R6PaqqcunSJW7cuEG9evWwtrYu9nMKDg6msLCQM2fOaLHeWaa0etfFxYXu3bvj5eWFra0thYWF2nEKCwvx9/cvdiyDwaA9vJw5c4YePXqQkJBATEyM9h3funWLzp07ExUVRU5OTrHvvl27dhQUFHDlyhX8/PyoWbMmlpaWREdHY2ZmRn5+vkl9raoqVlZWGI1Gzpw5g5OTE/n5+cXq89zcXBITEzlz5gxPP/10sb8p5ubm2vd55coVk++lpHq7Ivz8/Ioll/Ly8sjIyKiU5a3FP0NVVa3NUdGhFXe3cUq7z0p6aQFw7NgxbG1t6dSpE8HBwVy8eJFvv/2WgoICsrOzuXXrVql1ct26dbX2SFZWFh06dChW/s54FEXhX//6F99//z2XL18Gbveo6tatGxkZGdqKVr179yYhIUG7z2xtbdmzZw85OTnFYiiprnF3dycoKIgzZ87QoUMHLCwseP31100+p9frSU5O5vz583h7e2Nvb29yjKSkJFJTU4mJidHq+Pz8fJKTk4mPj8fJyYnOnTtrK//07t2b8PBwzpw5U+rP4O7tZd3vNWrUKJb8hdt/o+Lj4/Hw8Cjxc+LxIokEIcpRWFhITEwMCQkJf/u5zMzMMBgMJl1VFUUhMzOTmzdvcu7cOQoKCrh69apJ935FUTAajVy9epXz58/Ttm1bXFxcih0nJyeHhIQEk+1369GjB35+fvzrX/8Cbne97tmzJxMnTqRnz55YWlpSWFiojbctOraiKMTGxpZ57Htx9wzaaWlpxMTEEBYWhqIolT5Z2MPs999/v6c3SKJ06enplfY7XBZFUSgsLOTSpUtcunRJ21aU7IuKisLV1ZX8/Pxi8Tg6Opa4vaj+OHfunMl5iuqPkoYE2dvb07RpU2bNmmWy3Fm7du1IS0tj27Zt2rYnn3wSFxcXzp8/r21zcXHh66+/Zt68eezduxeDwcDEiRNxdHTU4ps1axZ16tRh8ODBzJ49m4ULF7Jz507tOu7utjxx4kQ8PDx45513tKThvn37uHjxIomJiVocd9dvhYWFxMfHc/bs2RLLlPZzWLNmDSdPnuQ///kPWVlZPPvss0yaNEn7bGn1aWFhIVevXuXcuXNkZ2eTlJRk8h0X1WHnz58nLy/P5Lw1a9bktddeIzg4mOvXrwO3J1fcvHkz27dvJyoqiqSkpGI/58aNG3P9+nXOnj2Lo6Mjw4YNKxZXjRo1OHv2LGfPnuXSpUv4+fmZlCmah+Po0aPcuHGjzO+noop6x6mqil6vJy0tjbCwME6ePMmYMWMq5Rzin6GqKmfPnv3H52g4duwYX3/9NStWrKBVq1asWrWKqKgonJ2dS72PfXx8SEtL48iRIyiKQlpaGjdu3Ci1fGBgIF5eXrz//vsm283NzWnRogW7du1CURSys7NJTEzk7Nmz1KpVC7idcLj7PgZKrGv8/f1p2rQpZ8+epUGDBly9erXMnm5PPvkkrq6uJm2qjIwMUlJSuHjxorbNYDBw5coVoqKiuHz5MkOGDCE7O5vk5GTq1avHW2+9pU0K+qDuXDlDVVWysrKIi4tj3759pKamFpsLRzyeZLJFIao5nU5H06ZNtQbq+fPnCQoKMilTr149HB0dy507oLQuh3eqW7cuiYmJJtv++OMPnJ2dsbe3Jy8vjwsXLtCiRQttv6LcXnf51KlT93JpFZKVlcXJkydZuXIlGzduJCUlpdLPIUR1VNr9WpH7uMjd9cfdunTpwrlz50ySCIqi0KNHD23OjbL4+PiQm5vLzp07ta6u2dnZxcrFxcWxePFi5s6dy7vvvlvqdSiKQqNGjdi7d6+WvC1piby7e3l5eXnh4OCgNborqmiSwB9//FGbKb6k+O/1fIqi0KJFC65evVriw0etWrUwGo0mD/KJiYkkJyfj5eWFqqqcOnWKli1bmhwzMDBQW1nj7NmzWFhYEBAQoJWpXbs2Li4uWpmTJ0/SuHFjk2FmzZo1IyEhodKSCEUKCgq4fv06ISEhLFmyhJMnT1bq8cWjLysri3PnzuHt7Y2qqmzfvp2OHTvSoEGDYmWtrKwYOnSoNklreRRFoX///ixdurTYEp0vv/wyPXr00OqjO5MoKSkppKenm7R57kV0dDReXl4mkytWhtzcXPbu3UtwcDBt27bl7NmzlZZEKKKqKtnZ2URFRbFq1SpWr15daXMwiEeDJBL+RtV1tuLK0q9fvxIr979Dly5dHpu3GjY2Njz//PO4uLhQu3Ztpk2bhl6v58CBA9rKHS+++CK9evXCzs4OX19fZs2axY8//ljm8AtVVYmKiqJr167auEIfH59i5X777TdatmxJx44dsbCwwM7Ojn//+9/89ddfpKWloaoqq1evZvjw4TRt2lTbrygK+/fvr7TvISMjg4MHD/Lll1+yYcMGSSCIx05MTAyOjo507twZOzs7AgICsLCwKHU7lF1/ALz44otMmjQJKH21Bmtra5599tkKJRKuXbuGvb09Xbt2xczMDEVRsLKy0hrijo6ONG7cGHNzc6ytralfv762bGRp13H58mWtnio63t18fX1p3bo1Dg4ONGzYkFmzZrFz5857ridUVSU2Npb+/ftjY2ODoiglJmkqcr6nnnoKPz8/HBwcaN++PaNHjzZZIeP999/XVqyIiooiNzeX119/HVtbW8zNzQkODsbZ2ZkTJ04AsHHjRlq3bk2fPn2wsbGhc+fOPPfcc1pX5vT0dLZs2cLkyZPx9PTkiSeeYOrUqezbt09LBh8+fJjr168zadIk7O3t8ff3Z9SoUaxZs+aevqfyXLt2jbVr17J48eK/JaFcVR71dlxVMjMz45VXXqF+/frY2NhodcGzzz6rTeZ35MgRtmzZwldffUWfPn1wdXWlRo0aBAUF8dVXX5Gfn8+KFSuKHdfa2trkn06nw9bWlueff77ECUBjY2NJTEyke/fugOlS6waDgXXr1jFt2jSCgoKwtbXF3d0db2/vCl3n+fPnOX78OPPnz9eGnXp4eFTKimhr166lT58+9OrVq0L19b3Izc3l5MmTLF++nO+//574+PhKPb54NMjQhr+JoigsX76cgwcPVtof7Hr16pk0MqqSo6MjkyZNuqf1dx+Et7d3sQluHlWqqtKtWzemTJmCubk5R48e5c0339S6yZ49e5Z3332XcePGMW3aNNLS0vj5559ZuXJlucdetWoVs2fP5qeffiI7O5uNGzdq4wSLnD59mg8++IARI0bw4Ycfoqoqhw8fZvLkyVqZffv24ejoyNy5c3F1deX06dOMHz++xDdv9+v69esm3aqFeNykp6ezcOFCJk2ahIODA7GxsUyZMoWkpKQSt0P59YePj4+2lKu7uztNmzYttgrDs88+y5UrV7hy5Uq5MaakpDBz5kytvsjPzycjI4PNmzcDt9+8z5o1S3sDf/78eT788MMyr2/ZsmVMmzaN1atXU6NGDXJycjh9+rTJhLdGo5Gx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cnLi5s2bbNy4kYsXL2rlNm/ezKuvvsrXX39tMplXamoqo0aN4q233uK7777DyspKW+2grPWx+/btS9euXbWxhzt37tRWnCmvXiiJra3t/9fe3YW2Vf9xHP/8zknSNllm2upatrq6yQbzAYdu3ojixUBB3EVhPiATpntgK3pRvakDnfRGEBHmxYaCyO6cWCkTcegUnKh02tKNKQOf2nXd0tgm2nVNTh7O/6L0/Fdr17Ot62na9wtC2/Qhn9I2JJ/+ft+fd4JCMpnUwYMHJ+37ne5737t3r5qbm/Xuu+8qFovp5MmT2r17t86dOyfLstTS0qL9+/d7w46OHTumzZs3a+vWrXrvvfckSX19fers7NQDDzyg119/3c+PAgCm5fexT3d3tzKZjIaGhqZdjixJXV1dam1t1Y4dO/Tyyy8rm83qxx9/VGtrq37++We1tLSoublZra2tymQy6ujo0Pvvvz9jzunuVzlOFOVupt/hkZER7dixQy+99JLa29tVLBb17bffqrm52dsOfaXHOR988IHa2trU3t6u0dFRHT58WH/88YfeeecdXbp0SW+88YZqa2v166+/qlAoTBmi+m8zPRaLRCJ66qmntHbtWkWjUWUyGW+l5cTX7u3t1TPPPKPt27frrbfe0rJly+Q4jn744Qft3r1bp0+fnnK7X3311aS3s9nspMH/85lZvXq1O/FENZAAxmjfvn167bXXAssQlFAopK+//lqbN29WOp0OOs4VRSIRffbZZ2pubp52+8ZCtWvXLh05csTbcoLg1dXVqampSQcOHAg6yoJgjNH+/ft1/PhxHT58OLAM27Zt06233hpYkbB+/XqtWrVqytnyAK7drl279Omnn3rHu2J+e/XVV9XW1kaRgWnFYjHt2bOnbI6gnHiM09HRcV1zo67Fli1b9MQTT2jnzp3KZDKz8nf13HPP6csvv1RfX98sJLx2VVVVrEiYS3feeafOnz+vdDqtRCKhZ599Vr/88su8LxGk8eU86XR60ZUIAG6syspKOY6jDRs26Mknn9T27duDjgQAAMrUbbfdJsdxNDg4qHA4rIcfflhr1qy54tbsG6W9vV0NDQ365JNP9M033+i7777T559/Puc5bhSKhDlijNHWrVt13333eUv6Ozs7tXfv3qCjzWhiQMh0xx4BKH9BLaV94YUX9Pjjj+vChQvat2+fzp49O+cZAADAwvDQQw9py5Ytqq6u1ujoqM6cOaOWlpZA/nFbLBb19ttv69ChQ3rwwQevOKeqHFEkzBHXdcv2ODPXdfXKK68EHQPADeK6rl588cVAbvvNN98sm+WRAABgfjt06NCMg6Ln2tDQ0LTDXMsZpzYAAAAAAADfKBIAAAAAAIBvFAkAAAAAgBmNjY0pn88HHWPRcl3XO047aBQJAAAAAIAZlUol/fbbb7r77ruDjrLo1NXVKZvNamhoKOgokigSAAAAAAA+HTlyRHfccYcaGxuDjrJo1NbWqqmpSR999FHQUTwUCQAAAAAA3z788EOtX79eTU1NqqysDDrOgmVZlh555BFt2rRJBw8eVKFQCDqSh+MfAQAAAABXpaOjQ/fcc4+2bdumgYEBff/99xocHAw61oJQU1OjjRs36v7779exY8d09OjRoCNNQZEAAAAAALhqPT096unp0b333qtHH31UsVhMJ06c0J9//qm//vor6HhlJZFIqLGxURs2bFA0GtVPP/2ktra2oGNNiyIBAAAAAHDNurq61NXVpbq6Oq1du1ZPP/20jDE6deqUksmkent7581pA/NFZWWlVq5cqRUrVmjdunWqqKhQT0+PvvjiC/X19QUdb0YUCQAAAACA65ZMJpVMJnX8+HHV1NSosbFRd911lx577DH19/fLcRwNDAyov79fqVRK2Ww26MhzIhKJqLa2Vg0NDVq+fLmWLFmilStXqre3V7///rs+/vhjJZPJoGNeFYoEAAAAYJEzxgQdAQvM8PCwhoeH1d3dLWl83/+KFSu8y5o1a5TP5zU4OKje3l7lcjkNDw8rnU5reHhYxWIx4O/g6liWpUQioZqaGlVXVysajaqhoUHLli1TNBrVmTNnlM1mdfbsWfX395f9PIl5UyTcdNNNQUcApjDGyLbtoGPgP9i2zf0GZo0xRtFoNOgYwIK0adMmjY2NBR0DPoTD4aAjYAGbKBZOnTrlXRePx3XLLbcokUiorq5Ot99+u6qrqzU2Nqabb75ZIyMj+ueff3T+/HkZY3Tp0iWNjo7q4sWLymazyuVyyuVyymazyufzs5o3HA6roqLCu0QiEcXjccViMcViMbmuq/r6ei1dulRLly7VxYsXFQqFlE6nlU6ndeHCBXV2diqVSimTycxqtvkg8CLBdV2lUik9//zzQUcB/pPrurN+x4TrUygUFIlEuN/ArHJdVz09PUHHABaUo0ePKhaLBR0DPp0+fVqu6wYdA4vIyMiIRkZG/vN90WhU8Xhc8XhcVVVVSiQSisfjqq+vVygUUiKRmPREf2BgQMuXL1c+n1ehUFChUFA6ndaSJUvkuq53yefzikQiMsbIGKNCoaDKykqFw2GFQiHZtq1UKqX6+nqvqMjlckqlUpPKjL///lv9/f1e2bHYZkCY1atXu7TEAAAAAIByZVmWQqGQVwhMlAKWZXmlwcQWnsuLhVKppFKpNKmAKBQKZbe1Yi5VVVUFvyIBAAAAAIDrUSqV5DiOHMcJOsqiYAUdAAAAAAAAlA+KBAAAAAAA4BtFAgAAAAAA8I0iAQAAAAAA+EaRAAAAAAAAfKNIAAAAAAAAvlEkAAAAAAAA3ygSAAAAAACAbxQJAAAAAADAN4oEAAAAAADgG0UCAAAAAADwjSIBAAAAAAD4RpEAAAAAAAB8o0gAAAAAAAC+USQAAAAAAADfKBIAAAAAAIBvFAkAAAAAAMA3igQAAAAAAOAbRQIAAAAAAPCNIgEAAAAAAPhmlUqloDMAAAAAAIAyUCqVxosEY0zQWQAAAAAAwDxmjPl/kWDbdtB5AAAAAADAPGbb9niRUCwWKRIAAAAAAMAV2batYrE4PmzRdV1ZFnMXAQAAAADAVJZlyXXd8dclyXEchcPhQEMBAAAAAID5KRwOy3EcSZcd/1gqlRQKhQILBQAAAAAA5p9wOKzLT3z0igTHcWRZFvMSAAAAAACApPG5CMYYbzWCdFmRYIxRLpdTKBRiZQIAAAAAAIvcRD+Qy+VkjPGunzRh0RijbDYrY4wikcikDwQAAAAAAAufZVmqqKiQJK8juNyUpQfGGOXzea9MkKRisahisehNaAQAAAAAAAuHMUa2bcu2bbmuq1wu513/b9PuYbj8E23b9k51YIYCAAAAAAALR7FY9F5O9ABX8j9+ycOPJQmNZAAAAABJRU5ErkJggg==)  
-![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANUlEQVR4nO3OMQ2AABAAsSNhZscYahheJwqQgQU2QtIq6DIze3UGAMBf3Gu1VcfXEwAAXrseoqcEQXyAWBgAAAAASUVORK5CYII=)  
+
+```mermaid
+flowchart LR
+    C[Client] -->|port 80| N[Nginx]
+    N -->|fastapi_app:8000| F[FastAPI]
+    F -->|SQLAlchemy| P[(PostgreSQL)]
+```
+
+---
 **1. Architecture FastAPI**  
-*Conception d'une API REST organisée autour de ressour* *8. Module complémentaire : assistant RAG* *ces (utilisateurs, publications), avec validation des données par Pydantic et gestion des erreurs par codes de statut HTTP.*  
-Dans une API REST, l'URL désigne la ressource et la méthode HTTP désigne l'action. Les endpoints sont déclarés dans main.py avec des décorateurs comme @app.get("/users/{id}").  
-| | | |  
-|-|-|-|  
-| **Ressource** | **URL** | **Méthodes** |   
-| Utilisateurs | /users | POST, GET |   
-|   | /users/{id} | GET, PATCH, DELETE |   
-|   | /users/{id}/posts | GET, DELETE |   
-|   | /users/me | GET (protégée) |   
-| Publications | /posts | POST (protégée), GET |   
-|   | /posts/{id} | GET, PATCH et DELETE (protégées) |   
-| Authentification | /login | POST |   
+*Conception d'une API REST organisée autour de ressources (utilisateurs, publications), avec validation des données par Pydantic et gestion des erreurs par codes de statut HTTP.*  
+Dans une API REST, l'URL désigne **la ressource** et la méthode HTTP désigne **l'action**. Les endpoints sont déclarés dans main.py avec des décorateurs comme @app.get("/users/{id}").  
+
+| Ressource | URL | Méthodes |
+|---|---|---|
+| Utilisateurs | /users | POST, GET |
+| Utilisateurs | /users/{id} | GET, PATCH, DELETE |
+| Utilisateurs | /users/{id}/posts | GET, DELETE |
+| Utilisateurs | /users/me | GET (protégée) |
+| Publications | /posts | POST (protégée), GET |
+| Publications | /posts/{id} | GET, PATCH et DELETE (protégées) |
+| Authentification | /login | POST |
    
    
 Les données envoyées par le client sont validées par les schémas Pydantic avant d'arriver dans la route. Les mêmes schémas contrôlent aussi la sortie : UserResponse ne contient pas le mot de passe, donc il n'est jamais renvoyé au client.  
@@ -50,12 +59,18 @@ class UserCreate(BaseModel):
      password: str = Field(..., min_length=6)  
      age: int = Field(None, ge=18)  
    
-Si les données sont invalides, FastAPI répond automatiquement avec une erreur 422. Pour les autres cas, on lève une HTTPException avec le bon code : 401 (non authentifié), 403 (interdit), 404 (introuvable), 409 (email déjà utilisé). La création d'un utilisateur renvoie 201 et lance une tâche en arrière-plan (BackgroundTasks) qui simule l'envoi d'un email de bienvenue.  
-![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANElEQVR4nO3OQQmAABRAsaeILbwZ9Fewo0Gs4E2ELcGWmTmqKwAA/uLeqr06v54AAPDa+gAthwNEfGhnhAAAAABJRU5ErkJggg==)  
+Si les données sont invalides, FastAPI répond automatiquement avec une erreur **422**. Pour les autres cas, on lève une **HTTPException** avec le bon code : 401 (non authentifié), 403 (interdit), 404 (introuvable), 409 (email déjà utilisé). La création d'un utilisateur renvoie 201 et lance une tâche en arrière-plan (BackgroundTasks) qui simule l'envoi d'un email de bienvenue.  
+
+---
 **2. Base de données**  
-*Modélisation relationnelle avec SQLAlchemy sous PostgreSQL, séparation entre * *modèles de base de données et schémas de validation, et gestion du cycle CRUD à travers des sessions injectées avec Depends.*  
+
+*Modélisation relationnelle avec **SQLAlchemy** sous PostgreSQL, séparation entre modèles de base de données et schémas de validation, et gestion du cycle CRUD à travers des sessions injectées avec Depends.*  
+
 Modèles et schémas : Un modèle SQLAlchemy (models.py) décrit une table de la base. Un schéma Pydantic (schemas.py) décrit les données échangées avec le client. Ils sont séparés : UserModel contient le mot de passe haché, alors que UserResponse ne l'expose pas.  
-SQLAlchemy : est un ORM, il fait le lien entre les classes Python et les tables SQL : une classe correspond à une table, un objet à une ligne. On écrit donc des requêtes en Python plutôt qu'en SQL.  
+
+**SQLAlchemy**: est un ORM, il fait le lien entre les classes Python et les tables
+
+**SQL** : une classe correspond à une table, un objet à une ligne. On écrit donc des requêtes en Python plutôt qu'en SQL.  
    
 Chaque requête HTTP reçoit sa propre session de base de données grâce à une fonction génératrice :  
 def get_db():  
@@ -65,51 +80,71 @@ def get_db():
      finally:  
          db.close()  
    
-Le yield prête la session à la route, et le finally la ferme toujours à la fin. Les routes la récupèrent avec db: Session = Depends(get_db).  
-Cycle CRUD : Les opérations suivent toujours le même schéma :  
-| | |  
-|-|-|  
-| **Action** | **Code dans le projet** |   
-| ** ** **C**reate    | db.add(new_user) puis db.commit() puis db.refresh(new_user) |   
-| ** ** **R**ead | db.query(UserModel).filter(UserModel.id == id).first() |   
-| ** ** **U**pdate | setattr(user, key, value) pour chaque champ envoyé, puis db.commit() |   
-| ** ** **D**elete | db.delete(post) puis db.commit() |   
+Le **yield** prête la session à la route, et le finally la ferme toujours à la fin. Les routes la récupèrent avec db: Session = Depends(get_db).  
+
+**Cycle CRUD** : Les opérations suivent toujours le même schéma :  
+ 
+| Action | Code utilisé |
+|---|---|
+| Créer | db.add(), db.commit(), db.refresh() |
+| Lire | db.query(Model).filter(...).first() ou .all() |
+| Modifier | setattr() sur chaque champ envoyé, puis db.commit() |
+| Supprimer | db.delete(), puis db.commit() |
+
    
    
-Les utilisateurs ne sont pas supprimés réellement : on passe is_active à False (suppression logique). Les publications sont supprimées définitivement.  
-Relations : Un utilisateur possède plusieurs publications. Au niveau SQL, la table posts contient la clé étrangère author_id vers users.id. Au niveau Python, relationship avec back_populates permet d'écrire user.posts et post.author.  
-![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANUlEQVR4nO3OYQ1AABSAwY8JoIGqr4Z6Eoiggn9mu0twy8wc1RkAAH9xbdVa7V9PAAB47X4A9C4EIsmYmgsAAAAASUVORK5CYII=)  
+Les utilisateurs ne sont pas supprimés réellement : on passe is_active à False (suppression logique). Les publications sont supprimées définitivement. 
+
+**Relations** : Un utilisateur possède plusieurs publications. Au niveau SQL, la table posts contient la clé étrangère author_id vers users.id. Au niveau Python, relationship avec back_populates permet d'écrire user.posts et post.author.  
+
+
+---
 **3. Sécurité et authentification**  
 *Protection des comptes par hachage des mots de passe, authentification sans état par jetons JWT, et politique CORS pour limiter les origines autorisées.*  
-Hachage : Le mot de passe n'est jamais stocké en clair. La bibliothèque passlib utilise l'algorithme bcrypt pour produire une empreinte (utils.py). À la connexion, on compare le mot de passe saisi avec l'empreinte grâce à verify_password.  
-JWT : L'authentification est stateless : le serveur ne garde aucune session en mémoire. À la connexion (/login), l'API crée un token JWT signé avec la SECRET_KEY, contenant l'identifiant de l'utilisateur et une date d'expiration. Le client renvoie ce token dans l'en-tête Authorization: Bearer à chaque requête.  
-Vérification : Dans oauth2.py, OAuth2PasswordBearer extrait le token de la requête. La fonction get_current_user le décode, vérifie la signature et l'expiration, puis charge l'utilisateur. Une route est protégée en ajoutant Depends(get_current_user).  
-CORS : Le middleware CORSMiddleware n'autorise que les origines listées (localhost:3000 par exemple) à appeler l'API depuis un navigateur.  
-![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANklEQVR4nO3OQQmAABRAsScYxpg/h5VMYARvRrCCNxG2BFtmZquOAAD4i3Ot7mr/egIAwGvXA224BcUMk6pDAAAAAElFTkSuQmCC)  
+
+**Hachage** : Le mot de passe n'est jamais stocké en clair. La bibliothèque passlib utilise l'algorithme bcrypt pour produire une empreinte (utils.py). À la connexion, on compare le mot de passe saisi avec l'empreinte grâce à verify_password.
+
+**JWT** : L'authentification est stateless : le serveur ne garde aucune session en mémoire. À la connexion (/login), l'API crée un token JWT signé avec la SECRET_KEY, contenant l'identifiant de l'utilisateur et une date d'expiration. Le client renvoie ce token dans l'en-tête Authorization: Bearer à chaque requête.  
+
+**Vérification** : Dans oauth2.py, OAuth2PasswordBearer extrait le token de la requête. La fonction get_current_user le décode, vérifie la signature et l'expiration, puis charge l'utilisateur. Une route est protégée en ajoutant Depends(get_current_user).  
+
+**CORS** : Le middleware CORSMiddleware n'autorise que les origines listées (localhost:3000 par exemple) à appeler l'API depuis un navigateur.  
+
+---
 **4. Conteneurisation et reverse proxy**  
-*Isolation de la base de données, de l'API et du reverse proxy Nginx dans des conteneurs Docker orchestrés par Docker Compose, au sein d'un réseau interne.*  
-Le dockerfile construit l'image de l'API (python:3.11-slim, installation du requirements.txt, lancement avec uvicorn). Le fichier docker-compose.yml lance trois services : nginx, fastapi_app et postgres_db. Ils partagent un réseau interne où chaque service est joignable par son nom, c'est pourquoi l'API se connecte à la base avec le nom d'hôte postgres_db. Les données de PostgreSQL sont conservées dans un volume (postgres_data), et les secrets sont injectés avec env_file.  
+*Isolation de la base de données, de l'API et du reverse proxy Nginx dans des conteneurs Docker orchestrés par Docker Compose, au sein d'un réseau interne.*
+
+Le dockerfile construit l'image de l'API (python:3.11-slim, installation du requirements.txt, lancement avec uvicorn). Le fichier docker-compose.yml lance 
+trois services : **nginx**, **fastapi_app** et **postgres_db**. Ils partagent un réseau interne où chaque service est joignable par son nom, c'est pourquoi l'API se connecte à la base avec le nom d'hôte postgres_db. Les données de PostgreSQL sont conservées dans un volume (postgres_data), et les secrets sont injectés avec env_file.  
+
 Nginx joue le rôle de reverse proxy : il reçoit les requêtes sur le port 80 et les transmet à l'API, qui n'est donc pas la porte d'entrée directe du serveur.  
-location / {  
-     proxy_pass http://fastapi_app:8000;  
-     proxy_set_header Host $host;  
-     proxy_set_header X-Real-IP $remote_addr;  
- }  
-   
-Remarque : en développement, les ports 8000 et 5432 sont aussi publiés pour faciliter les tests. En production, seul le port de Nginx resterait ouvert.  
-![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAM0lEQVR4nO3KsQ0AIRAEsUW6Qij1KvnevhMSYmKQ7GiCGd09k3wBAOAVf+2o4wYAwE1qAdYuAy151mgcAAAAAElFTkSuQmCC)  
+
+```nginx
+location / {
+    proxy_pass http://fastapi_app:8000;
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+}
+```
+
+---
 **5. Outils et standards**  
-*Standards professionnels autour du code : règle de cascade, migrations avec Alembic, inspection avec DBeaver, séparation des responsabilités, fichiers * *de configuration, et gestion rigoureuse des dépendances logicielles via un fichier de spécification (requirements.txt), garantissant la reproductibilité de l'environnement et la portabilité du système d'un poste de développement à un serveur de production.*  
-Règle de cascade. La clé étrangère est déclarée avec ondelete="CASCADE" : si un utilisateur est supprimé de la table users, PostgreSQL supprime automatiquement ses publications, ce qui évite les publications orphelines.  
-Migrations avec Alembic. Les tables ne sont pas créées par le code mais par des migrations versionnées, comme un Git pour la base de données. Le fichier env.py pointe vers les modèles avec target_metadata = Base.metadata.  
-alembic revision --autogenerate -m "creation des tables"  
- alembic upgrade head  
-   
+*Standards professionnels autour du code : règle de cascade, migrations avec Alembic, inspection avec DBeaver, séparation des responsabilités, fichiers de configuration, et gestion rigoureuse des dépendances logicielles via un fichier de spécification (requirements.txt), garantissant la reproductibilité de l'environnement et la portabilité du système d'un poste de développement à un serveur de production.*  
+
+Règle de cascade. La clé étrangère est déclarée avec ondelete="CASCADE" : si un utilisateur est supprimé de la table users, PostgreSQL supprime automatiquement ses publications, ce qui évite les publications orphelines.
+ 
+Migrations avec Alembic. Les tables ne sont pas créées par le code mais par des migrations versionnées, comme un Git pour la base de données. Le fichier env.py pointe vers les modèles avec target_metadata = Base.metadata.
+ 
+```bash
+alembic revision --autogenerate -m "creation des tables"
+alembic upgrade head
+```
+ 
 Inspection avec DBeaver. DBeaver permet de se connecter à PostgreSQL (localhost, port 5432) pour consulter les tables et vérifier les données, par exemple que le mot de passe est bien haché.  
 Séparation des préoccupations. Chaque fichier a une seule responsabilité (configuration, connexion, modèles, schémas, sécurité, routes). Depends relie ces briques : une route déclare ce dont elle a besoin (session, utilisateur connecté) et FastAPI le fournit.  
 Fichiers de configuration.  
 | | |  
-|-|-|  
+|-|-|
 | **Fichier** | **Rôle** |   
 | .env | Contient les secrets et paramètres (non publié sur GitHub) |   
 | config.py | Lit le .env avec pydantic-settings et vérifie les types |   
@@ -120,17 +155,19 @@ Fichiers de configuration.
 | alembic.ini | Configuration des migrations |   
    
 Gestion des dépendances. Le fichier requirements.txt permet de réinstaller exactement le même environnement avec une seule commande, sur n'importe quelle machine ou dans un conteneur.  
-fastapi  
- uvicorn  
- sqlalchemy  
- psycopg[binary]  
- pydantic-settings  
- pydantic[email]  
- passlib[bcrypt]  
- bcrypt==4.0.1  
- pyjwt  
- python-multipart  
-   
-Quelques points à retenir : pydantic[email] est nécessaire pour EmailStr, bcrypt est fixé en version 4.0.1 car les versions plus récentes sont incompatibles avec passlib, pyjwt est le paquet correspondant à import jwt, et python-multipart est requis pour le formulaire de connexion. Après toute modification de ce fichier, l'image Docker doit être reconstruite (docker compose up -d --build).  
-![](data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAnEAAAACCAYAAAA3pIp+AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAANElEQVR4nO3OQQmAABRAsaeILbwZ9Fewo0Gs4E2ELcGWmTmqKwAA/uLeqr06v54AAPDa+gAthwNEfGhnhAAAAABJRU5ErkJggg==)  
+
+```text
+fastapi
+uvicorn
+sqlalchemy
+psycopg[binary]
+pydantic-settings
+pydantic[email]
+passlib[bcrypt]
+bcrypt==4.0.1
+pyjwt
+python-multipart
+```
+
+---
 **Auteur**  
