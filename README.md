@@ -50,12 +50,16 @@ Dans une API REST, l'URL désigne **la ressource** et la méthode HTTP désigne 
 | Publications | /posts/{id} | GET, PATCH et DELETE (protégées) |
 | Authentification | /login | POST |
 
-Les données envoyées par le client sont validées par les schémas Pydantic avant d'arriver dans la route. Les mêmes schémas contrôlent aussi la sortie : UserResponse ne contient pas le mot de passe, donc il n'est jamais renvoyé au client.  
-class UserCreate(BaseModel):  
-     username: str = Field(..., min_length=3)  
-     email: EmailStr  
-     password: str = Field(..., min_length=6)  
-     age: int = Field(None, ge=18)  
+Les données envoyées par le client sont validées par les schémas Pydantic avant d'arriver dans la route. Les mêmes schémas contrôlent aussi la sortie : UserResponse ne contient pas le mot de passe, donc il n'est jamais renvoyé au client. 
+
+```python
+class UserCreate(BaseModel):
+    username: str = Field(..., min_length=3)
+    email: EmailStr
+    password: str = Field(..., min_length=6)
+    age: int = Field(None, ge=18)
+```
+
 
 Si les données sont invalides, FastAPI répond automatiquement avec une erreur **422**. Pour les autres cas, on lève une **HTTPException** avec le bon code : 401 (non authentifié), 403 (interdit), 404 (introuvable), 409 (email déjà utilisé). La création d'un utilisateur renvoie 201 et lance une tâche en arrière-plan (BackgroundTasks) qui simule l'envoi d'un email de bienvenue.  
 
@@ -71,13 +75,14 @@ Modèles et schémas : Un modèle SQLAlchemy (models.py) décrit une table de 
 **SQL** : une classe correspond à une table, un objet à une ligne. On écrit donc des requêtes en Python plutôt qu'en SQL.  
 
 Chaque requête HTTP reçoit sa propre session de base de données grâce à une fonction génératrice :  
+```python
 def get_db():  
      db = SessionLocal()  
      try:  
          yield db  
      finally:  
          db.close()  
-
+```
 Le **yield** prête la session à la route, et le finally la ferme toujours à la fin. Les routes la récupèrent avec db: Session = Depends(get_db).  
 
 **Cycle CRUD** : Les opérations suivent toujours le même schéma :  
