@@ -26,8 +26,7 @@
  ├── nginx/  
  │   └── default.conf     # Configuration du reverse proxy  
  ├── alembic.ini          # Configuration des migrations  
- └── alembic/             # Scripts de migration  
-   
+ └── alembic/             # Scripts de migration 
 
 ```mermaid
 flowchart LR
@@ -50,15 +49,14 @@ Dans une API REST, l'URL désigne **la ressource** et la méthode HTTP désigne 
 | Publications | /posts | POST (protégée), GET |
 | Publications | /posts/{id} | GET, PATCH et DELETE (protégées) |
 | Authentification | /login | POST |
-   
-   
+
 Les données envoyées par le client sont validées par les schémas Pydantic avant d'arriver dans la route. Les mêmes schémas contrôlent aussi la sortie : UserResponse ne contient pas le mot de passe, donc il n'est jamais renvoyé au client.  
 class UserCreate(BaseModel):  
      username: str = Field(..., min_length=3)  
      email: EmailStr  
      password: str = Field(..., min_length=6)  
      age: int = Field(None, ge=18)  
-   
+
 Si les données sont invalides, FastAPI répond automatiquement avec une erreur **422**. Pour les autres cas, on lève une **HTTPException** avec le bon code : 401 (non authentifié), 403 (interdit), 404 (introuvable), 409 (email déjà utilisé). La création d'un utilisateur renvoie 201 et lance une tâche en arrière-plan (BackgroundTasks) qui simule l'envoi d'un email de bienvenue.  
 
 ---
@@ -71,7 +69,7 @@ Modèles et schémas : Un modèle SQLAlchemy (models.py) décrit une table de 
 **SQLAlchemy**: est un ORM, il fait le lien entre les classes Python et les tables
 
 **SQL** : une classe correspond à une table, un objet à une ligne. On écrit donc des requêtes en Python plutôt qu'en SQL.  
-   
+
 Chaque requête HTTP reçoit sa propre session de base de données grâce à une fonction génératrice :  
 def get_db():  
      db = SessionLocal()  
@@ -79,11 +77,11 @@ def get_db():
          yield db  
      finally:  
          db.close()  
-   
+
 Le **yield** prête la session à la route, et le finally la ferme toujours à la fin. Les routes la récupèrent avec db: Session = Depends(get_db).  
 
 **Cycle CRUD** : Les opérations suivent toujours le même schéma :  
- 
+
 | Action | Code utilisé |
 |---|---|
 | Créer | db.add(), db.commit(), db.refresh() |
@@ -91,8 +89,8 @@ Le **yield** prête la session à la route, et le finally la ferme toujours à l
 | Modifier | setattr() sur chaque champ envoyé, puis db.commit() |
 | Supprimer | db.delete(), puis db.commit() |
 
-   
-   
+
+
 Les utilisateurs ne sont pas supprimés réellement : on passe is_active à False (suppression logique). Les publications sont supprimées définitivement. 
 
 **Relations** : Un utilisateur possède plusieurs publications. Au niveau SQL, la table posts contient la clé étrangère author_id vers users.id. Au niveau Python, relationship avec back_populates permet d'écrire user.posts et post.author.  
@@ -132,14 +130,14 @@ location / {
 *Standards professionnels autour du code : règle de cascade, migrations avec Alembic, inspection avec DBeaver, séparation des responsabilités, fichiers de configuration, et gestion rigoureuse des dépendances logicielles via un fichier de spécification (requirements.txt), garantissant la reproductibilité de l'environnement et la portabilité du système d'un poste de développement à un serveur de production.*  
 
 Règle de cascade. La clé étrangère est déclarée avec ondelete="CASCADE" : si un utilisateur est supprimé de la table users, PostgreSQL supprime automatiquement ses publications, ce qui évite les publications orphelines.
- 
+
 Migrations avec Alembic. Les tables ne sont pas créées par le code mais par des migrations versionnées, comme un Git pour la base de données. Le fichier env.py pointe vers les modèles avec target_metadata = Base.metadata.
- 
+
 ```bash
 alembic revision --autogenerate -m "creation des tables"
 alembic upgrade head
 ```
- 
+
 Inspection avec DBeaver. DBeaver permet de se connecter à PostgreSQL (localhost, port 5432) pour consulter les tables et vérifier les données, par exemple que le mot de passe est bien haché.  
 Séparation des préoccupations. Chaque fichier a une seule responsabilité (configuration, connexion, modèles, schémas, sécurité, routes). Depends relie ces briques : une route déclare ce dont elle a besoin (session, utilisateur connecté) et FastAPI le fournit.  
 Fichiers de configuration.  
@@ -153,7 +151,7 @@ Fichiers de configuration.
 | docker-compose.yml | Définition des trois conteneurs |   
 | nginx/default.conf | Configuration du reverse proxy |   
 | alembic.ini | Configuration des migrations |   
-   
+
 Gestion des dépendances. Le fichier requirements.txt permet de réinstaller exactement le même environnement avec une seule commande, sur n'importe quelle machine ou dans un conteneur.  
 
 ```text
