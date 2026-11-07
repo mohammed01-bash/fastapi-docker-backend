@@ -51,6 +51,12 @@ def create_user(pyload:UserCreate,background_task:BackgroundTasks, db:Session=De
 @app.get("/users",response_model=List[UserResponse])
 def read_users(db:Session=Depends(get_db)):
     return db.query(UserModel).filter(UserModel.is_active==True).all()
+     
+@app.get("/users/me",status_code=status.HTTP_200_OK,response_model=UserResponse)
+def get_my_profile( current_user:UserModel=Depends(get_current_user)):
+
+     return {"message":"Accès autorisé",
+             "user":current_user}    
 
 
 @app.get("/users/{id}",response_model=UserResponse)
@@ -149,8 +155,8 @@ def update_post(id:int,pyload:PostUpdate,db:Session=Depends(get_db),current_user
      if post_to_update.author_id != current_user.id :
           raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
      updated_post=pyload.model_dump(exclude_unset=True)
-     for key, value in updated_post.items:
-          setattr(post_to_update(),key,value)
+     for key, value in updated_post.items():
+          setattr(post_to_update,key,value)
      db.commit()
      db.refresh(post_to_update)
      return post_to_update
@@ -169,11 +175,6 @@ def user_login(user_credentials:OAuth2PasswordRequestForm=Depends(), db:Session=
              "token_type":"bearer"}
 
 
-@app.get("/users/me",status_code=status.HTTP_200_OK)
-def get_my_profile( current_user:UserModel=Depends(get_current_user)):
-
-     return {"message":"Accès autorisé",
-             "user":current_user}    
 
 
 @app.get("/posts",response_model=list[PostResponse])
