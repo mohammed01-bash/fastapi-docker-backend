@@ -69,8 +69,10 @@ def read_user(id:int , db:Session=Depends(get_db)):
 
 
 @app.delete("/users/{id}", response_model=UserResponse)
-def delete_user(id:int , db:Session=Depends(get_db)):
+def delete_user(id:int , db:Session=Depends(get_db), current_user: UserModel = Depends(get_current_user)):
       user_active=db.query(UserModel).filter(UserModel.id==id,UserModel.is_active==True).first()
+      if id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
       if not (user_active) : 
            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail=f"user {id} not found") 
       else : 
@@ -81,7 +83,9 @@ def delete_user(id:int , db:Session=Depends(get_db)):
 
 
 @app.patch("/users/{id}",response_model=UserResponse)
-def update_user(id:int , pyload:UserUpdate,db:Session=Depends(get_db)):
+def update_user(id:int , pyload:UserUpdate,db:Session=Depends(get_db), current_user: UserModel = Depends(get_current_user)):
+      if id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
       user_to_update=db.query(UserModel).filter(UserModel.id==id,UserModel.is_active==True).first()
       if not (user_to_update):
            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="not found")
