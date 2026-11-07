@@ -99,13 +99,13 @@ def creat_post(pyload:PostCreate,db:Session=Depends(get_db), current_user:UserMo
      db.refresh(new_post)
      return new_post
 
-##Show all user posts by user id
+##Toutes les publications d'un utilisateur par son ID
 @app.get("/users/{id}/posts",response_model=List [ PostResponse])
 def read_user_posts(id:int , db:Session=Depends(get_db)):
      author_posts=db.query(PostModel).filter(PostModel.author_id==id).all()
      return author_posts
 
-##Show only one post by id
+##Une seule publication par son ID
 @app.get("/posts/{id}",response_model=PostResponse)
 def read_post(id:int, db:Session=Depends(get_db)):
      post=db.query(PostModel).filter(PostModel.id==id).first()   
